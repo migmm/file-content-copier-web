@@ -1,0 +1,90 @@
+{
+  "name": "file-content-copier-web",
+  "displayName": "File content copier for web based code editors",
+  "description": "Copy the content inside of selected files",
+  "version": "1.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/migmm/file-content-copier-web.git"
+  },
+  "publisher": "miguelm",
+  "icon": "images/logo.png",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./dist/extension.js",
+  "browser": "./dist/web/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.copyFilesContent",
+        "title": "Copy Content",
+        "category": "Files"
+      },
+      {
+        "command": "extension.openSettings",
+        "title": "Open Settings",
+        "category": "Files"
+      }
+    ],
+    "configuration": {
+      "title": "File Content Copier",
+      "properties": {
+        "copyFilesContent.includeFolderStructure": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include folder structure when copying files content."
+        }
+      }
+    },
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "extension.copyFilesContent",
+          "when": "!explorerResourceIsFolder && resourceLangId != ''"
+        }
+      ]
+    }
+  },
+  "activationEvents": [
+    "onCommand:extension.copyFilesContent",
+    "onCommand:extension.openSettings"
+  ],
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile-web": "webpack --config webpack.config.web.js",
+    "watch-web": "webpack --config webpack.config.web.js --watch",
+    "package-web": "webpack --config webpack.config.web.js --mode production --devtool hidden-source-map",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "vscode-test",
+    "open-in-browser": "vscode-test-web --extensionDevelopmentPath=. ."
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/mocha": "^10.0.6",
+    "@types/vscode": "^1.60.0",
+    "@types/webpack-env": "^1.16.0",
+    "assert": "^2.1.0",
+    "eslint": "^8.5.0",
+    "path-browserify": "^1.0.1",
+    "process": "^0.11.10",
+    "ts-loader": "^9.5.1",
+    "typescript": "^4.3.5",
+    "vscode-test": "^1.6.0",
+    "webpack": "^5.50.0",
+    "webpack-cli": "^4.8.0"
+  },
+  "dependencies": {
+    "@vscode/test-web": "^0.0.67",
+    "@vscode/vsce": "^2.24.0"
+  }
+}
