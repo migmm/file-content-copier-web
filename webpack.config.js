@@ -23,12 +23,14 @@ const webExtensionConfig = {
         },
         fallback: {
             // Webpack 5 no longer polyfills Node.js core modules automatically.
-            // see https://webpack.js.org/configuration/resolve/#resolvefallback
-            // for the list of Node.js core module polyfills.
             assert: require.resolve('assert'),
             path: require.resolve('path-browserify'),
             fs: false,
-            os: false
+            os: false,
+            crypto: false,
+            util: false,
+            stream: false,
+            buffer: false
         }
     },
     module: {
@@ -47,6 +49,9 @@ const webExtensionConfig = {
     plugins: [
         new webpack.ProvidePlugin({
             process: 'process/browser'
+        }),
+        new webpack.DefinePlugin({
+            'process.env.BROWSER': JSON.stringify(true)
         })
     ],
     externals: {
@@ -55,6 +60,51 @@ const webExtensionConfig = {
     performance: {
         hints: false
     },
-    devtool: 'nosources-source-map'
+    devtool: 'nosources-source-map',
+    infrastructureLogging: {
+        level: "log", // enables logging required for problem matchers
+    },
 };
-module.exports = [webExtensionConfig];
+
+// Config for extension running in Node.js (default)
+const nodeExtensionConfig = {
+    mode: 'none',
+    target: 'node',
+    entry: {
+        extension: './src/extension.ts',
+    },
+    output: {
+        filename: 'extension.js',
+        path: path.join(__dirname, './dist'),
+        libraryTarget: 'commonjs2',
+        devtoolModuleFilenameTemplate: '../[resource-path]'
+    },
+    resolve: {
+        extensions: ['.ts', '.js']
+    },
+    module: {
+        rules: [
+            {
+                test: /\.ts$/,
+                exclude: /node_modules/,
+                use: [
+                    {
+                        loader: 'ts-loader'
+                    }
+                ]
+            }
+        ]
+    },
+    externals: {
+        vscode: 'commonjs vscode'
+    },
+    performance: {
+        hints: false
+    },
+    devtool: 'nosources-source-map',
+    infrastructureLogging: {
+        level: "log", // enables logging required for problem matchers
+    },
+};
+
+module.exports = [webExtensionConfig, nodeExtensionConfig];
