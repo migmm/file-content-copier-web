@@ -11,16 +11,13 @@ const webExtensionConfig = {
     },
     output: {
         filename: 'extension.js',
-        path: path.join(__dirname, './dist/web'),
+        path: path.join(__dirname, './dist'),
         libraryTarget: 'commonjs',
         devtoolModuleFilenameTemplate: '../../[resource-path]'
     },
     resolve: {
         mainFields: ['browser', 'module', 'main'],
         extensions: ['.ts', '.js'],
-        alias: {
-            // provides alternate implementation for node module and source files
-        },
         fallback: {
             // Webpack 5 no longer polyfills Node.js core modules automatically.
             assert: require.resolve('assert'),
@@ -66,45 +63,4 @@ const webExtensionConfig = {
     },
 };
 
-// Config for extension running in Node.js (default)
-const nodeExtensionConfig = {
-    mode: 'none',
-    target: 'node',
-    entry: {
-        extension: './src/extension.ts',
-    },
-    output: {
-        filename: 'extension.js',
-        path: path.join(__dirname, './dist'),
-        libraryTarget: 'commonjs2',
-        devtoolModuleFilenameTemplate: '../[resource-path]'
-    },
-    resolve: {
-        extensions: ['.ts', '.js']
-    },
-    module: {
-        rules: [
-            {
-                test: /\.ts$/,
-                exclude: /node_modules/,
-                use: [
-                    {
-                        loader: 'ts-loader'
-                    }
-                ]
-            }
-        ]
-    },
-    externals: {
-        vscode: 'commonjs vscode'
-    },
-    performance: {
-        hints: false
-    },
-    devtool: 'nosources-source-map',
-    infrastructureLogging: {
-        level: "log", // enables logging required for problem matchers
-    },
-};
-
-module.exports = [webExtensionConfig, nodeExtensionConfig];
+module.exports = webExtensionConfig;
