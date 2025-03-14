@@ -32,6 +32,27 @@ And that´s all! Now yo have the content of the files you selected in the clipbo
 ![Configuration](images/config-menu.png)
 
 
+## Build instructions
+
+    1. Install vsce
+
+        npm install -g @vscode/vsce
+
+    2. Package
+
+        vsce package
+
+    You can also run 
+
+        npm run compile 
+
+
+If you want to test the extension in a web browser editor before compile run
+
+    npm run open-in-browser 
+
+
+
 ## License
 
 MIT
